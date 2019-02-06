@@ -44,7 +44,7 @@ In your application settings add a new allowed callback which is equal to `OIDCR
 Now, go to OAuth section in advanced settings and change `JsonWebToken Token Signature Algorithm` to RS256.
 
 
-## Authorization
+## OIDC Authorization
 
 You can configure Apache to protect a certain location based on an attribute of the user. Here is an example:
 
@@ -73,4 +73,17 @@ function(user, context, callback) {
 
    user.folders.push('example');
 }
+```
+## OAuth 2.0 Authorization
+
+You can configure Apache to protect a certain location for bearer token api access when using the OIDC setup above. Include the one OIDCOAuthVerifyJwksUri directive above your location block and protect it with AuthType oauth20.
+
+```
+OIDCOAuthVerifyJwksUri https://{your_tenant_domain}/.well-known/jwks.json
+
+<Location /path/to/their/api/endpoint>
+  AuthType oauth20
+  Require claim iss:https://{your_tenant_domain}
+  Require claim clientID:{OIDCClientID}
+</Location>
 ```
